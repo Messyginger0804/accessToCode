@@ -46,7 +46,7 @@ function CountdownTimer() {
     };
 
     return (
-        <div className="text-white text-center font-mono text-9xl rounded-lg bg-gray-800 shadow-lg p-4 flex gap-6">
+        <div className="text-white text-center font-mono text-9xl rounded-lg bg-gray-800 shadow-lg p-4 flex justify-center gap-6 px-12">
             {timeLeft.days > 0 && (
                 <div className="mb-2">
                     <span className="font-bold">{formatTime(timeLeft.days)}</span> days{' '}
