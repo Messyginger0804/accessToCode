@@ -5,7 +5,8 @@ function SignupForm() {
     const initialValues = {
         name: '',
         email: '',
-        password: ''
+        password: '',
+        linkedin: ''
     };
 
     const onSubmit = (values) => {
@@ -29,6 +30,12 @@ function SignupForm() {
             errors.password = 'Required';
         } else if (values.password.length < 6) {
             errors.password = 'Password must be at least 6 characters long';
+        }
+
+        if (!values.linkedin) {
+            errors.linkedin = 'Required';
+        } else if (!/^(https?:\/\/)?(www\.)?linkedin\.com\/.*/i.test(values.linkedin)) {
+            errors.linkedin = 'Invalid LinkedIn profile URL';
         }
 
         return errors;
@@ -82,6 +89,18 @@ function SignupForm() {
                             className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
                         />
                         <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="linkedin" className="block text-gray-300 text-sm font-bold mb-2">
+                            LinkedIn Profile:
+                        </label>
+                        <Field
+                            type="text"
+                            id="linkedin"
+                            name="linkedin"
+                            className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                        <ErrorMessage name="linkedin" component="div" className="text-red-500 text-sm mt-1" />
                     </div>
                     <button
                         type="submit"
