@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev-front": "vite",
-    "dev-back": "cd backend && node server.js",
+    "dev-back": "nodemon ./backend/server.js",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -16,6 +16,7 @@
     "formik": "^2.4.6",
     "mongodb": "^6.6.1",
     "mongoose": "^8.3.4",
+    "nodemon": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
