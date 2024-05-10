@@ -5,8 +5,8 @@ const yourImage = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBx
 
 function Description() {
     return (
-        <div className="flex items-center">
-            <div className="max-w-xs mr-6">
+        <div className="flex flex-col items-start md:flex-row w-full m-auto md:w-[50%]">
+            <div className="max-w-xs mr-6 mb-4 md:mb-0 md:mr-12 items-center">
                 <img src={yourImage} alt="Your Image" className="rounded-full" />
             </div>
             <div className="flex-1">
