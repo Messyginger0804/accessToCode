@@ -6,6 +6,7 @@ const router = express.Router();
 
 
 router.post('/create', async (req, res) => {
+    console.log('Request Body:', req.body);
     try {
         const client = new Clients(req.body);
         await client.save();
