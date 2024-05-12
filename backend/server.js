@@ -1,8 +1,7 @@
 import 'dotenv/config';
 import express from "express";
 import connectDB from "./config/dbConfig.js";
-import clientsController from './controllers/ClientsController';
-
+import ClientsRouter from './routes/ClientRouter.js'
 
 
 const app = express();
@@ -16,7 +15,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.use('/api/clients', clientsController); // Add this line
+app.use('/api/clients', ClientsRouter); // Add this line
 
 // Start the server
 app.listen(PORT, () => {
