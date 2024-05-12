@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from "express";
 import connectDB from "./config/dbConfig.js";
+import clientsController from './controllers/ClientsController';
+
 
 
 const app = express();
@@ -13,6 +15,8 @@ const PORT = process.env.PORT || 3001;
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
+
+app.use('/api/clients', clientsController); // Add this line
 
 // Start the server
 app.listen(PORT, () => {
