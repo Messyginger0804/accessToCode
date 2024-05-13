@@ -1,37 +1,77 @@
-// const Clients = require('../models/Clients');
-
 import Clients from '../models/clients.js';
 
 export const createClient = async (clientData) => {
-    const client = new Clients(clientData);
-    await client.save();
-    return client;
+    try {
+        const client = new Clients(clientData);
+        const savedClient = await client.save();
+        console.log('Client created:', savedClient);
+        return savedClient;
+    } catch (error) {
+        console.error('Error creating client:', error);
+        return null;
+    }
 };
 
 export const getClients = async () => {
-    const allClients = await Clients.find();
-    console.log(allClients.length);
-    console.log(allClients);
-    return allClients;
+    try {
+        const allClients = await Clients.find();
+        console.log('Total clients:', allClients.length);
+        console.log('All clients:', allClients);
+        return allClients;
+    } catch (error) {
+        console.error('Error fetching clients:', error);
+        return [];
+    }
 };
 
 export const getClient = async (id) => {
-    return await Clients.findById(id);
+    try {
+        const client = await Clients.findById(id);
+        console.log('Client found:', client);
+        return client;
+    } catch (error) {
+        console.error('Error fetching client:', error);
+        return null;
+    }
 };
 
 export const updateClient = async (id, clientData) => {
-    const client = await Clients.findById(id);
-    if (!client) {
+    try {
+        const client = await Clients.findById(id);
+        if (!client) {
+            console.log('Client not found');
+            return null;
+        }
+        client.name = clientData.name;
+        client.email = clientData.email;
+        client.linkedin = clientData.linkedin;
+        const updatedClient = await client.save();
+        console.log('Client updated:', updatedClient);
+        return updatedClient;
+    } catch (error) {
+        console.error('Error updating client:', error);
         return null;
     }
-    client.name = clientData.name;
-    client.email = clientData.email;
-    client.linkedin = clientData.linkedin;
-    await client.save();
-    return client;
 };
 
-
 export const deleteClient = async (id) => {
-    await Clients.findByIdAndRemove(id);
+    try {
+        await Clients.findByIdAndRemove(id);
+        console.log('Client deleted');
+    } catch (error) {
+        console.error('Error deleting client:', error);
+    }
+};
+
+export const pickRandomWinner = async () => {
+    try {
+        const allClients = await Clients.find();
+        const randomIndex = Math.floor(Math.random() * allClients.length);
+        const randomWinner = allClients[randomIndex];
+        console.log('Random winner:', randomWinner);
+        return randomWinner;
+    } catch (error) {
+        console.error('Error picking random winner:', error);
+        return null;
+    }
 };
