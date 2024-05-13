@@ -1,20 +1,25 @@
-const Clients = require('../models/Clients');
+// const Clients = require('../models/Clients');
 
-const createClient = async (clientData) => {
+import Clients from '../models/clients.js';
+
+export const createClient = async (clientData) => {
     const client = new Clients(clientData);
     await client.save();
     return client;
 };
 
-const getClients = async () => {
-    return await Clients.find();
+export const getClients = async () => {
+    const allClients = await Clients.find();
+    console.log(allClients.length);
+    console.log(allClients);
+    return allClients;
 };
 
-const getClient = async (id) => {
+export const getClient = async (id) => {
     return await Clients.findById(id);
 };
 
-const updateClient = async (id, clientData) => {
+export const updateClient = async (id, clientData) => {
     const client = await Clients.findById(id);
     if (!client) {
         return null;
@@ -26,8 +31,7 @@ const updateClient = async (id, clientData) => {
     return client;
 };
 
-const deleteClient = async (id) => {
+
+export const deleteClient = async (id) => {
     await Clients.findByIdAndRemove(id);
 };
-
-module.exports = { createClient, getClients, getClient, updateClient, deleteClient };
