@@ -1,5 +1,6 @@
 import express from "express";
-import { Clients } from '../models/clients.js'
+// import { Clients } from '../models/clients.js'
+import Clients from '../models/clients.js'
 
 
 const router = express.Router();
@@ -22,6 +23,17 @@ router.get('/', async (req, res) => {
         res.json(clients);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching clients' });
+    }
+});
+
+router.get('/winner', async (req, res) => {
+    try {
+        const allClients = await Clients.find();
+        const randomIndex = Math.floor(Math.random() * allClients.length);
+        const randomWinner = allClients[randomIndex];
+        res.json(randomWinner);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching random winner' });
     }
 });
 
