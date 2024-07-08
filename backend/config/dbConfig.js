@@ -1,15 +1,14 @@
-import mongoose from "mongoose";
-import 'dotenv/config';
+// dbConfig.js
 
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const connectDB = async () => {
-    // console.log(process.env.MONGODB_DATABASE, process.env.MONGODB_PASSWORD, process.env.MONGODB_USERNAME);
-    mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.swtoktn.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority&appName=Cluster0`).then(() => {
-        console.log("DATABASE IS CONNECTED!");
-        // mongodb+srv://jcashley4363:<password>@cluster0.swtoktn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-    }).catch(error => {
-        console.log(error);
-    })
-}
-export default connectDB
+const pool = new Pool({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT,
+});
 
+export default pool;

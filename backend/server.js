@@ -1,24 +1,26 @@
+// server.js
+
 import 'dotenv/config';
 import express from "express";
-import connectDB from "./config/dbConfig.js";
-import ClientsRouter from './routes/ClientRouter.js'
+import pool from "./config/dbConfig.js"; // Adjust the import
+
+// import ClientsRouter from './routes/ClientRouter.js';
 import bodyParser from "body-parser";
-import cors from 'cors'
-// import { getClients } from './service/ClientService.js';
-// import { pickRandomWinner } from './service/ClientService.js';
-
-
+import cors from 'cors';
 
 const app = express();
 
 app.use(cors());
-
-
 app.use(bodyParser.json());
 
-
-connectDB();
-
+// Assuming pool is correctly set up to handle database connections
+pool.connect((err) => {
+    if (err) {
+        console.error('Error connecting to PostgreSQL database:', err);
+    } else {
+        console.log('Connected to PostgreSQL database');
+    }
+});
 
 const PORT = process.env.PORT || 3001;
 
@@ -27,7 +29,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.use('/api/clients', ClientsRouter); // Add this line
+// app.use('/api/clients', ClientsRouter); // Add this line
 
 // Start the server
 app.listen(PORT, () => {

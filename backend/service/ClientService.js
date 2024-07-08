@@ -1,10 +1,16 @@
-import Clients from '../models/clients.js';
-import { Winners } from '../models/winners.js';
+// services.js
 
+import pool from '../config/dbConfig.js';
+
+// Create a client
 export const createClient = async (clientData) => {
+    const { name, email, linkedin, password } = clientData;
+    const query = 'INSERT INTO clients (name, email, linkedin, password, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING *';
+    const values = [name, email, linkedin, password];
+
     try {
-        const client = new Clients(clientData);
-        const savedClient = await client.save();
+        const result = await pool.query(query, values);
+        const savedClient = result.rows[0];
         console.log('Client created:', savedClient);
         return savedClient;
     } catch (error) {
@@ -13,9 +19,13 @@ export const createClient = async (clientData) => {
     }
 };
 
+// Get all clients
 export const getClients = async () => {
+    const query = 'SELECT * FROM clients';
+
     try {
-        const allClients = await Clients.find();
+        const result = await pool.query(query);
+        const allClients = result.rows;
         console.log('Total clients:', allClients.length);
         console.log('All clients:', allClients);
         return allClients;
@@ -25,9 +35,14 @@ export const getClients = async () => {
     }
 };
 
+// Get a client by ID
 export const getClient = async (id) => {
+    const query = 'SELECT * FROM clients WHERE client_id = $1';
+    const values = [id];
+
     try {
-        const client = await Clients.findById(id);
+        const result = await pool.query(query, values);
+        const client = result.rows[0];
         console.log('Client found:', client);
         return client;
     } catch (error) {
@@ -36,17 +51,15 @@ export const getClient = async (id) => {
     }
 };
 
+// Update a client
 export const updateClient = async (id, clientData) => {
+    const { name, email, linkedin } = clientData;
+    const query = 'UPDATE clients SET name = $1, email = $2, linkedin = $3, updated_at = NOW() WHERE client_id = $4 RETURNING *';
+    const values = [name, email, linkedin, id];
+
     try {
-        const client = await Clients.findById(id);
-        if (!client) {
-            console.log('Client not found');
-            return null;
-        }
-        client.name = clientData.name;
-        client.email = clientData.email;
-        client.linkedin = clientData.linkedin;
-        const updatedClient = await client.save();
+        const result = await pool.query(query, values);
+        const updatedClient = result.rows[0];
         console.log('Client updated:', updatedClient);
         return updatedClient;
     } catch (error) {
@@ -55,32 +68,36 @@ export const updateClient = async (id, clientData) => {
     }
 };
 
+// Delete a client
 export const deleteClient = async (id) => {
+    const query = 'DELETE FROM clients WHERE client_id = $1';
+
     try {
-        await Clients.findByIdAndRemove(id);
+        await pool.query(query, [id]);
         console.log('Client deleted');
     } catch (error) {
         console.error('Error deleting client:', error);
     }
 };
 
+// Pick a random winner
 export const pickRandomWinner = async () => {
     try {
-        const allClients = await Clients.find();
+        const queryAllClients = 'SELECT * FROM clients';
+        const resultAllClients = await pool.query(queryAllClients);
+        const allClients = resultAllClients.rows;
+
         const randomIndex = Math.floor(Math.random() * allClients.length);
         const randomWinner = allClients[randomIndex];
+
+        const queryInsertWinner = 'INSERT INTO winners (client_id, user_id, created_at) VALUES ($1, $2, NOW()) RETURNING *';
+        const valuesInsertWinner = [randomWinner.client_id, randomWinner.client_id];
+        await pool.query(queryInsertWinner, valuesInsertWinner);
+
+        const queryDeleteClient = 'DELETE FROM clients WHERE client_id = $1';
+        await pool.query(queryDeleteClient, [randomWinner.client_id]);
+
         console.log('Random winner:', randomWinner);
-
-        // Create a new winner entry in the Winners collection
-        const winner = new Winners({
-            clientId: randomWinner._id,
-            userId: randomWinner._id
-        });
-        await winner.save();
-
-        // Remove the winner from the Clients collection
-        await Clients.findByIdAndRemove(randomWinner._id);
-
         return randomWinner;
     } catch (error) {
         console.error('Error picking random winner:', error);

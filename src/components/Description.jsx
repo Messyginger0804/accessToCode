@@ -3,9 +3,6 @@ import { links } from '../utils/links';
 function Description() {
     return (
         <div className="flex flex-col p-6 items-start md:flex-row w-full m-auto md:w-[50%]">
-            {/* <div className="max-w-xs mr-6 mb-4 md:mb-0 md:mr-12 items-center">
-                <img src={yourImage} alt="Your Image" className="rounded-full" />
-            </div> */}
             <div className="flex-1">
                 <h2 className="text-2xl font-bold mb-4">Join My Coding Journey: Giving Back to Developers in Need</h2>
                 <p className="text-lg mb-4">
