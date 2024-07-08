@@ -1,40 +1,60 @@
 import express from "express";
-// import { Clients } from '../models/clients.js'
-import Clients from '../models/clients.js'
-import { pickRandomWinner } from "../service/ClientService.js";
-
+import { getUsers, pickRandomWinner } from "../service/ClientService.js"; // Assuming your service file is named services.js and contains the PostgreSQL service functions
+import { createUser, getAllWinners } from "../service/ClientService.js";
 
 const router = express.Router();
 
-
+// Create a client
 router.post('/create', async (req, res) => {
     console.log('Request Body:', req.body);
     try {
-        const client = new Clients(req.body);
-        await client.save();
-        res.status(201).json(client);
+        const clientData = req.body;
+        const createdClient = await createUser(clientData); // Assuming createClient function is defined and imported correctly
+        if (createdClient) {
+            res.status(201).json(createdClient);
+        } else {
+            res.status(400).json({ message: 'Error creating client' });
+        }
     } catch (error) {
-        res.status(400).json({ message: 'Error creating client' });
+        console.error('Error creating client:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
-router.get('/', async (req, res) => {
+// Get all clients
+router.get('/users', async (req, res) => {
     try {
-        const clients = await Clients.find();
-        res.json(clients);
+        const allClients = await getUsers(); // Assuming getClients function is defined and imported correctly
+        res.json(allClients);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching clients' });
+        console.error('Error fetching clients:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
-router.get('/winner', async (req, res) => {
+// Pick a random winner
+router.get('/pickWinner', async (req, res) => {
     try {
-        const winner = await pickRandomWinner(req);
-        res.json(winner);
+        const randomWinner = await pickRandomWinner(); // Assuming pickRandomWinner function is defined and imported correctly
+        if (randomWinner) {
+            res.json(randomWinner);
+        } else {
+            res.status(404).json({ message: 'No clients available or error picking winner' });
+        }
     } catch (error) {
-        res.status(500).json({ message: 'Error picking random winner' });
+        console.error('Error picking random winner:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
+router.get('/winners', async (req, res) => {
+    try {
+        const winners = await getAllWinners();
+        res.json(winners);
+    } catch (error) {
+        console.error('Error fetching winners:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 export default router;

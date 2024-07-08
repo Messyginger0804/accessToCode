@@ -4,9 +4,9 @@ import 'dotenv/config';
 import express from "express";
 import pool from "./config/dbConfig.js"; // Adjust the import
 
-// import ClientsRouter from './routes/ClientRouter.js';
 import bodyParser from "body-parser";
 import cors from 'cors';
+import router from './routes/ClientRouter.js';
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-// app.use('/api/clients', ClientsRouter); // Add this line
+app.use('/api/clients', router); // Add this line
 
 // Start the server
 app.listen(PORT, () => {
