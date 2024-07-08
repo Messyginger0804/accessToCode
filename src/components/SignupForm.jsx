@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { AiOutlineLoading } from 'react-icons/ai'; // Assuming 'react-icons' package is used
 
 function SignupForm() {
+    const x = `You're signed up!`;
+
     const initialValues = {
         username: '',
         email: '',
@@ -12,8 +15,10 @@ function SignupForm() {
 
     const [error, setError] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const onSubmit = async (values) => {
+    const onSubmit = async (values, { setSubmitting }) => {
+        setIsLoading(true); // Set loading state to true when submitting
         try {
             const response = await axios.post(`${import.meta.env.VITE_PORT}/api/clients/create`, values);
 
@@ -26,6 +31,9 @@ function SignupForm() {
         } catch (error) {
             console.error('Error creating user:', error);
             setError('Failed to create user. Please try again.');
+        } finally {
+            setIsLoading(false); // Reset loading state regardless of success or failure
+            setSubmitting(false); // Reset Formik's submitting state
         }
     };
 
@@ -69,11 +77,11 @@ function SignupForm() {
             </div>
             <h1 className="text-3xl font-bold mb-4 text-center">accessToCode</h1>
             <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validate}>
-                {({ values }) => (
+                {({ isSubmitting, values }) => (
                     <Form>
                         {isSubmitted ? (
                             <div className="text-center mt-14 bg-gray-700 rounded p-4">
-                                <p className="text-3xl text-white mb-4">You're signed up!</p>
+                                <p className="text-3xl text-white mb-4">{x}</p>
                                 <p className="text-gray-300 mb-4">
                                     Make sure we are connected on <a className="underline text-blue-500" href={values.linkedin}>LinkedIn</a>
                                 </p>
@@ -131,8 +139,13 @@ function SignupForm() {
                                 <button
                                     type="submit"
                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    disabled={isSubmitting}
                                 >
-                                    Sign Up
+                                    {isLoading ? (
+                                        <AiOutlineLoading className="animate-spin mr-2" size={24} />
+                                    ) : (
+                                        'Sign Up'
+                                    )}
                                 </button>
                                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                             </>
