@@ -1,6 +1,8 @@
 import express from "express";
 import { getUsers, pickRandomWinner } from "../service/ClientService.js"; // Assuming your service file is named services.js and contains the PostgreSQL service functions
 import { createUser, getAllWinners } from "../service/ClientService.js";
+import { addToGivenAwayItems } from '../service/InventoryService.js'; // Import the function to add items to Given Away Items
+
 
 const router = express.Router();
 
@@ -33,11 +35,21 @@ router.get('/users', async (req, res) => {
 });
 
 // Pick a random winner
-router.get('/pickWinner', async (req, res) => {
+router.post('/pick-winner', async (req, res) => {
     try {
-        const randomWinner = await pickRandomWinner(); // Assuming pickRandomWinner function is defined and imported correctly
+        const randomWinner = await pickRandomWinner(); // Function to pick a random winner
         if (randomWinner) {
-            res.json(randomWinner);
+            console.log('----->', req.body)
+            const itemId = req.body.itemId; // Ensure itemId is correctly retrieved from req.body
+            const winnerId = randomWinner.id; // Ensure winnerId is correctly retrieved from randomWinner
+
+            // Add the item to Given Away Items
+            const givenAwayItem = await addToGivenAwayItems(itemId, winnerId);
+
+            res.json({
+                winner: randomWinner,
+                givenAwayItem: givenAwayItem
+            });
         } else {
             res.status(404).json({ message: 'No clients available or error picking winner' });
         }
