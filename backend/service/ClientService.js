@@ -1,4 +1,5 @@
 import Clients from '../models/clients.js';
+import { Winners } from '../models/winners.js';
 
 export const createClient = async (clientData) => {
     try {
@@ -69,6 +70,17 @@ export const pickRandomWinner = async () => {
         const randomIndex = Math.floor(Math.random() * allClients.length);
         const randomWinner = allClients[randomIndex];
         console.log('Random winner:', randomWinner);
+
+        // Create a new winner entry in the Winners collection
+        const winner = new Winners({
+            clientId: randomWinner._id,
+            userId: randomWinner._id
+        });
+        await winner.save();
+
+        // Remove the winner from the Clients collection
+        await Clients.findByIdAndRemove(randomWinner._id);
+
         return randomWinner;
     } catch (error) {
         console.error('Error picking random winner:', error);

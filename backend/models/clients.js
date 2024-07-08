@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 // Define the client schema
-const clientSchema = new mongoose.Schema({
+const clientSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -34,6 +34,4 @@ const clientSchema = new mongoose.Schema({
 });
 
 // Create the clients collection
-const Clients = mongoose.model('Clients', clientSchema);
-
-export { Clients };
+export default mongoose.model('Clients', clientSchema);

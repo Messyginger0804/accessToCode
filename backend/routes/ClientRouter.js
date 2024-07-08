@@ -1,6 +1,7 @@
 import express from "express";
 // import { Clients } from '../models/clients.js'
 import Clients from '../models/clients.js'
+import { pickRandomWinner } from "../service/ClientService.js";
 
 
 const router = express.Router();
@@ -28,12 +29,10 @@ router.get('/', async (req, res) => {
 
 router.get('/winner', async (req, res) => {
     try {
-        const allClients = await Clients.find();
-        const randomIndex = Math.floor(Math.random() * allClients.length);
-        const randomWinner = allClients[randomIndex];
-        res.json(randomWinner);
+        const winner = await pickRandomWinner(req);
+        res.json(winner);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching random winner' });
+        res.status(500).json({ message: 'Error picking random winner' });
     }
 });
 
