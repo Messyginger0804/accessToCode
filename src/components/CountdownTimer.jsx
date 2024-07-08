@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 function CountdownTimer() {
-    // Get the current date
-    const currentDate = new Date();
-
-    // Get the month and year of the next month
-    let nextMonth = currentDate.getMonth() + 1;
-    let nextYear = currentDate.getFullYear();
-    if (nextMonth === 12) {
-        nextMonth = 0; // January
-        nextYear++; // Increment the year
-    }
-
-    // Set the target date to be the 9th of the next month
-    const targetDate = new Date(nextYear, nextMonth, 9);
-
     const calculateTimeLeft = () => {
+        const currentDate = new Date();
+
+        let targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 15);
+
+        if (targetDate < currentDate) {
+            targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 15);
+        }
+
         const difference = targetDate - currentDate;
         let timeLeft = {};
 
@@ -31,19 +25,39 @@ function CountdownTimer() {
         return timeLeft;
     };
 
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setTimeLeft(calculateTimeLeft());
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    });
-
     const formatTime = (time) => {
         return time < 10 ? `0${time}` : time;
     };
+
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+    useEffect(() => {
+        const currentDate = new Date();
+        let targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 15);
+
+        if (currentDate.getDate() >= 15) {
+            targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 15);
+        }
+
+        const timer = setInterval(() => {
+            const now = new Date();
+            const difference = targetDate - now;
+
+            if (difference < 0) {
+                targetDate.setMonth(targetDate.getMonth() + 1);
+                targetDate.setDate(15);
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((difference / 1000 / 60) % 60);
+            const seconds = Math.floor((difference / 1000) % 60);
+
+            setTimeLeft({ days, hours, minutes, seconds });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
 
     return (
         <div className="text-white text-center font-mono text-9xl rounded-lg bg-gray-800 shadow-lg p-4 flex justify-center gap-6 px-12">

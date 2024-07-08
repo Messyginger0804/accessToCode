@@ -10,6 +10,7 @@ function SignupForm() {
         username: '',
         email: '',
         password: '',
+        confirmPassword: '',
         linkedin: ''
     };
 
@@ -56,13 +57,25 @@ function SignupForm() {
             errors.password = 'Password must be at least 6 characters long';
         }
 
+        if (!values.confirmPassword) {
+            errors.confirmPassword = 'Required';
+        } else if (values.confirmPassword !== values.password) {
+            errors.confirmPassword = 'Passwords must match';
+        }
+
         if (!values.linkedin) {
             errors.linkedin = 'Required';
-        } else if (!/^(https?:\/\/)?(www\.)?linkedin\.com\/.*/i.test(values.linkedin)) {
+        } else if (!/^https?:\/\/(www\.)?linkedin\.com\/in\/.*/i.test(values.linkedin)) {
             errors.linkedin = 'Invalid LinkedIn profile URL';
         }
 
         return errors;
+    };
+
+    const handleLinkedInFocus = (event) => {
+        if (!event.currentTarget.value) {
+            event.currentTarget.value = 'https://www.linkedin.com/in/';
+        }
     };
 
     return (
@@ -81,7 +94,7 @@ function SignupForm() {
                     <Form>
                         {isSubmitted ? (
                             <div className="text-center mt-14 bg-gray-700 rounded p-4">
-                                <p className="text-3xl text-white mb-4">{x}</p>
+                                <p className="text-3xl text-white mb-4 shadow-sky-200">{x}</p>
                                 <p className="text-gray-300 mb-4">
                                     Make sure we are connected on <a className="underline text-blue-500" href={values.linkedin}>LinkedIn</a>
                                 </p>
@@ -89,49 +102,52 @@ function SignupForm() {
                         ) : (
                             <>
                                 <div className="mb-4">
-                                    <label htmlFor="username" className="block text-gray-300 text-sm font-bold mb-2">
-                                        Name:
-                                    </label>
                                     <Field
                                         type="text"
                                         id="username"
                                         name="username"
+                                        placeholder="Name"
                                         className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
                                     />
                                     <ErrorMessage name="username" component="div" className="text-red-500 text-sm mt-1" />
                                 </div>
                                 <div className="mb-4">
-                                    <label htmlFor="email" className="block text-gray-300 text-sm font-bold mb-2">
-                                        Email:
-                                    </label>
                                     <Field
                                         type="email"
                                         id="email"
                                         name="email"
+                                        placeholder="Email"
                                         className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
                                     />
                                     <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
                                 </div>
                                 <div className="mb-4">
-                                    <label htmlFor="password" className="block text-gray-300 text-sm font-bold mb-2">
-                                        Password:
-                                    </label>
                                     <Field
                                         type="password"
                                         id="password"
                                         name="password"
+                                        placeholder="Password"
                                         className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
                                     />
                                     <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
                                 </div>
                                 <div className="mb-4">
-                                    <label htmlFor="linkedin" className="block text-gray-300 text-sm font-bold mb-2">
-                                        LinkedIn Profile:
-                                    </label>
+                                    <Field
+                                        type="password"
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        placeholder="Confirm Password"
+                                        className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
+                                    />
+                                    <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm mt-1" />
+                                </div>
+                                <div className="mb-4">
                                     <Field
                                         type="text"
                                         id="linkedin"
                                         name="linkedin"
+                                        placeholder="LinkedIn Profile"
+                                        onFocus={handleLinkedInFocus}
                                         className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
                                     />
                                     <ErrorMessage name="linkedin" component="div" className="text-red-500 text-sm mt-1" />
