@@ -1,5 +1,5 @@
 import express from 'express';
-import { createInventoryItem, getAllInventoryItems } from '../service/InventoryService.js'; // Adjust the import based on your service functions
+import { createInventoryItem, getAllInventoryItems } from '../service/InventoryService.js';
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.post('/create', async (req, res) => {
     console.log('Request Body:', req.body);
     try {
         const inventoryData = req.body;
-        const createdInventoryItem = await createInventoryItem(inventoryData); // Implement this function in your service
+        const createdInventoryItem = await createInventoryItem(inventoryData);
         if (createdInventoryItem) {
             res.status(201).json(createdInventoryItem);
         } else {
@@ -23,7 +23,7 @@ router.post('/create', async (req, res) => {
 // Get all inventory items
 router.get('/items', async (req, res) => {
     try {
-        const allInventoryItems = await getAllInventoryItems(); // Implement this function in your service
+        const allInventoryItems = await getAllInventoryItems();
         res.json(allInventoryItems);
     } catch (error) {
         console.error('Error fetching inventory items:', error);

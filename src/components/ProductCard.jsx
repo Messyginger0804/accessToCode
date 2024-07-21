@@ -16,13 +16,12 @@ function ProductCard() {
     });
 
     useEffect(() => {
-        // Function to fetch inventory data
         const fetchInventory = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_PORT}/api/inventory/items`);
                 console.log(response.data);
                 if (response.data.length > 0) {
-                    const firstItem = response.data[0]; // Assuming only one item is fetched for simplicity
+                    const firstItem = response.data[0];
                     setInventory({
                         productName: firstItem.make + ' ' + firstItem.model || '',
                         image_url: firstItem.image_url || '',

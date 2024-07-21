@@ -36,15 +36,22 @@ router.get('/users', async (req, res) => {
 
 // Pick a random winner
 router.post('/pick-winner', async (req, res) => {
+    console.log(req, '----------- this is the req.body from the pick winner')
     try {
         const randomWinner = await pickRandomWinner(); // Function to pick a random winner
+
         if (randomWinner) {
-            console.log('----->', req.body)
-            const itemId = req.body.itemId; // Ensure itemId is correctly retrieved from req.body
+            console.log(req.body, '----------- this is the req.body from the pick winner')
+            const inventoryId = req.body.inventoryId; // Ensure inventoryId is correctly retrieved from req.body
             const winnerId = randomWinner.id; // Ensure winnerId is correctly retrieved from randomWinner
+            const raffleDate = req.body.raffleDate || new Date(); // Default to current date if raffleDate is not provided
+
+            if (!inventoryId) {
+                throw new Error('No inventoryId provided');
+            }
 
             // Add the item to Given Away Items
-            const givenAwayItem = await addToGivenAwayItems(itemId, winnerId);
+            const givenAwayItem = await addToGivenAwayItems(inventoryId, winnerId, raffleDate);
 
             res.json({
                 winner: randomWinner,
@@ -55,7 +62,7 @@ router.post('/pick-winner', async (req, res) => {
         }
     } catch (error) {
         console.error('Error picking random winner:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: error.message || 'Internal server error' });
     }
 });
 

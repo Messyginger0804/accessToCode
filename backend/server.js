@@ -6,8 +6,8 @@ import pool from "./config/dbConfig.js"; // Adjust the import
 
 import bodyParser from "body-parser";
 import cors from 'cors';
-import clientRouter from './routes/ClientRouter.js'; // Assuming this is your ClientRouter
-import inventoryRouter from './routes/InventoryRouter.js'; // Assuming this is your InventoryRouter
+import ClientRouter from './routes/ClientRouter.js';
+import InventoryRouter from './routes/InventoryRouter.js';
 
 const app = express();
 
@@ -30,11 +30,8 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-// Use the ClientRouter for '/api/clients'
-app.use('/api/clients', clientRouter);
-
-// Use the InventoryRouter for '/api/inventory'
-app.use('/api/inventory', inventoryRouter);
+app.use('/api/clients', ClientRouter);
+app.use('/api/inventory', InventoryRouter);
 
 // Start the server
 app.listen(PORT, () => {

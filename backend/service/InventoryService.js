@@ -31,29 +31,22 @@ export async function getAllInventoryItems() {
 
 export async function addToGivenAwayItems(inventoryId, winnerId, raffleDate) {
     try {
-        // Query to fetch details from inventory based on inventoryId
-        const inventoryQuery = 'SELECT make, model, image_url, specs FROM inventory WHERE id = $1';
-        const inventoryValues = [inventoryId];
-        const { rows } = await pool.query(inventoryQuery, inventoryValues);
+        const query = `
+            INSERT INTO given_away_items (inventory_id, make, model, image_url, specs, raffle_date, winner_id)
+            SELECT id, make, model, image_url, specs, $1, $2
+            FROM inventory
+            WHERE id = $3
+            RETURNING *;
+        `;
+        const values = [raffleDate, winnerId, inventoryId];
+        const { rows } = await pool.query(query, values);
 
         if (rows.length === 0) {
-            throw new Error(`Inventory item with inventoryId ${inventoryId} not found.`);
+            throw new Error(`No inventory item found with id ${inventoryId}`);
         }
 
-        // Extract details from the inventory item
-        const { make, model, image_url, specs } = rows[0];
-
-        // Query to insert into given_away_items
-        const insertQuery = `
-            INSERT INTO given_away_items (inventory_id, make, model, image_url, specs, raffle_date, winner_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING *
-        `;
-        const insertValues = [inventoryId, make, model, image_url, specs, raffleDate, winnerId];
-
-        // Execute the insert query
-        const { rows: insertedRows } = await pool.query(insertQuery, insertValues);
-        return insertedRows[0]; // Return the inserted row
+        console.log('Inventory item transferred:', rows[0]);
+        return rows[0];
     } catch (error) {
         console.error('Error adding to given away items:', error);
         throw error;
