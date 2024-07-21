@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function CountdownTimer() {
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+    const [winnerSelected, setWinnerSelected] = useState(null);
+
+
     const calculateTimeLeft = () => {
         const currentDate = new Date();
-
         let targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 15);
 
         if (targetDate < currentDate) {
@@ -30,8 +33,6 @@ function CountdownTimer() {
         return time < 10 ? `0${time}` : time;
     };
 
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-    const [winnerSelected, setWinnerSelected] = useState(null); // Changed to null to store the date
 
     useEffect(() => {
         const currentDate = new Date();
@@ -46,7 +47,6 @@ function CountdownTimer() {
             const difference = targetDate - now;
 
             if (difference <= 0 && !winnerSelected) {
-                // Trigger winner selection process here
                 selectWinner();
             }
 
@@ -63,9 +63,12 @@ function CountdownTimer() {
 
     const selectWinner = async () => {
         try {
-            const response = await axios.post(`${import.meta.env.VITE_PORT}/api/clients/pick-winner`);
+            const response = await axios.post(`${import.meta.env.VITE_PORT}/api/clients/pick-winner`, {
+                inventoryId: inventoryId,
+                raffleDate: new Date().toISOString()
+            });
             if (response.status === 200) {
-                setWinnerSelected(new Date()); // Store the current date/time as winner selected
+                setWinnerSelected(new Date());
                 console.log('Winner selected:', response.data);
             } else {
                 console.error('Failed to select winner:', response.statusText);
@@ -89,7 +92,7 @@ function CountdownTimer() {
             </div>
             {winnerSelected && (
                 <div className="text-lg text-yellow-300 mt-4">
-                    Winner selected on {winnerSelected.toLocaleString()} {/* Display winner information here */}
+                    Winner selected on {winnerSelected.toLocaleString()}
                 </div>
             )}
             <button onClick={() => selectWinner()}>click</button>

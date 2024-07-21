@@ -1,7 +1,7 @@
 import express from "express";
-import { getUsers, pickRandomWinner } from "../service/ClientService.js"; // Assuming your service file is named services.js and contains the PostgreSQL service functions
+import { getUsers, pickRandomWinner } from "../service/ClientService.js";
 import { createUser, getAllWinners } from "../service/ClientService.js";
-import { addToGivenAwayItems } from '../service/InventoryService.js'; // Import the function to add items to Given Away Items
+import { addToGivenAwayItems } from '../service/InventoryService.js';
 
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router.post('/create', async (req, res) => {
     console.log('Request Body:', req.body);
     try {
         const clientData = req.body;
-        const createdClient = await createUser(clientData); // Assuming createClient function is defined and imported correctly
+        const createdClient = await createUser(clientData);
         if (createdClient) {
             res.status(201).json(createdClient);
         } else {
@@ -36,7 +36,7 @@ router.get('/users', async (req, res) => {
 
 // Pick a random winner
 router.post('/pick-winner', async (req, res) => {
-    console.log(req, '----------- this is the req.body from the pick winner')
+    console.log('Request body:', req.body); // Log the request body
     try {
         const randomWinner = await pickRandomWinner(); // Function to pick a random winner
 

@@ -12,7 +12,8 @@ function ProductCard() {
             display: '',
             processor: '',
             storage: ''
-        }
+        },
+        inventoryId: ''  // Add inventoryId to state
     });
 
     useEffect(() => {
@@ -32,7 +33,8 @@ function ProductCard() {
                             display: '',
                             processor: '',
                             storage: ''
-                        }
+                        },
+                        inventoryId: firstItem.inventoryId || ''
                     });
                 }
             } catch (error) {
