@@ -3,13 +3,11 @@ import SignupForm from './components/SignupForm';
 import CountdownTimer from './components/CountdownTimer';
 import ProductCard from './components/ProductCard';
 import Description from './components/Description';
-import Admin from './components/Admin'; // Import Admin component
+import Admin from './components/Admin';
 
 function App() {
-  // State to manage which form to display
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Function to toggle form visibility
   const toggleForm = () => {
     setIsAdmin(prevState => !prevState);
   };
@@ -35,7 +33,7 @@ function App() {
         </div>
 
         <div className="w-full lg:w-1/2 flex justify-center my-12">
-          {isAdmin ? <Admin /> : <SignupForm />} {/* Conditionally render the form */}
+          {isAdmin ? <Admin /> : <SignupForm />}
         </div>
 
       </div>
@@ -45,8 +43,6 @@ function App() {
           <Description />
         </div>
       </div>
-
-      {/* Button to toggle between SignupForm and Admin */}
     </div>
   );
 }

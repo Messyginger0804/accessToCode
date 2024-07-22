@@ -5,13 +5,14 @@ import { AiOutlineLoading } from 'react-icons/ai'; // Assuming 'react-icons' pac
 import Swal from 'sweetalert2'; // Import SweetAlert2
 
 function SignupForm() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false); // Add state to control form visibility
+
     const initialValues = {
         username: '',
         email: '',
         linkedin: ''
     };
-
-    const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = async (values, { setSubmitting }) => {
         setIsLoading(true); // Set loading state to true when submitting
@@ -24,6 +25,8 @@ function SignupForm() {
                     text: 'You are signed up for the next giveaway!',
                     icon: 'success',
                     confirmButtonText: 'OK'
+                }).then(() => {
+                    setIsSubmitted(true); // Hide the form after successful signup
                 });
             } else {
                 Swal.fire({
@@ -42,8 +45,8 @@ function SignupForm() {
                 confirmButtonText: 'OK'
             });
         } finally {
-            setIsLoading(false); // Reset loading state regardless of success or failure
-            setSubmitting(false); // Reset Formik's submitting state
+            setIsLoading(false);
+            setSubmitting(false);
         }
     };
 
@@ -76,64 +79,72 @@ function SignupForm() {
     };
 
     return (
-        <div className="max-w-md w-full bg-gray-900 rounded-lg shadow-lg p-8">
-            <div className='flex justify-evenly'>
-                <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
-                    <img src="/vite.svg" className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-                    <img src="/react.svg" className="logo react" alt="React logo" />
-                </a>
-            </div>
-            <h1 className="text-3xl font-bold mb-4 text-center">accessToCode</h1>
-            <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validate}>
-                {({ isSubmitting, values }) => (
-                    <Form>
-                        <div className="mb-4">
-                            <Field
-                                type="text"
-                                id="username"
-                                name="username"
-                                placeholder="Name"
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <ErrorMessage name="username" component="div" className="text-red-500 text-sm mt-1" />
-                        </div>
-                        <div className="mb-4">
-                            <Field
-                                type="email"
-                                id="email"
-                                name="email"
-                                placeholder="Email"
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
-                        </div>
-                        <div className="mb-4">
-                            <Field
-                                type="text"
-                                id="linkedin"
-                                name="linkedin"
-                                placeholder="LinkedIn Profile"
-                                onFocus={handleLinkedInFocus}
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <ErrorMessage name="linkedin" component="div" className="text-red-500 text-sm mt-1" />
-                        </div>
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            disabled={isSubmitting}
-                        >
-                            {isLoading ? (
-                                <AiOutlineLoading className="animate-spin mr-2" size={24} />
-                            ) : (
-                                'Sign Up'
-                            )}
-                        </button>
-                    </Form>
+        <div className="flex items-center justify-center bg-gray-900">
+            <div className="max-w-md w-full bg-gray-800 rounded-lg shadow-lg p-8">
+                <div className='flex justify-center mb-4'>
+                    <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
+                        <img src="/vite.svg" className="logo" alt="Vite logo" />
+                    </a>
+                </div>
+                <h1 className="text-3xl font-bold mb-4 text-center text-white">accessToCode</h1>
+                {!isSubmitted ? (
+                    <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validate}>
+                        {({ isSubmitting }) => (
+                            <Form>
+                                <div className="mb-4">
+                                    <Field
+                                        type="text"
+                                        id="username"
+                                        name="username"
+                                        placeholder="Name"
+                                        className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
+                                    />
+                                    <ErrorMessage name="username" component="div" className="text-red-500 text-sm mt-1" />
+                                </div>
+                                <div className="mb-4">
+                                    <Field
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        placeholder="Email"
+                                        className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
+                                    />
+                                    <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+                                </div>
+                                <div className="mb-4">
+                                    <Field
+                                        type="text"
+                                        id="linkedin"
+                                        name="linkedin"
+                                        placeholder="LinkedIn Profile"
+                                        onFocus={handleLinkedInFocus}
+                                        className="appearance-none border rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:shadow-outline"
+                                    />
+                                    <ErrorMessage name="linkedin" component="div" className="text-red-500 text-sm mt-1" />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    disabled={isSubmitting}
+                                >
+                                    {isLoading ? (
+                                        <AiOutlineLoading className="animate-spin mr-2" size={24} />
+                                    ) : (
+                                        'Sign Up'
+                                    )}
+                                </button>
+                            </Form>
+                        )}
+                    </Formik>
+                ) : (
+                    <div className="text-center">
+                        <p className="text-xl font-bold text-white">You are signed up for the next giveaway!</p>
+                    </div>
                 )}
-            </Formik>
+                <div className="mt-6 text-center text-gray-400 text-sm">
+                    <p>Disclaimer: This giveaway is subject to availability of products. The giveaway will only be conducted when we have products available to give away.</p>
+                </div>
+            </div>
         </div>
     );
 }
