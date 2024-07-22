@@ -1,38 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { InventoryContext } from '../InventoryContext'; // Import your context
 
 function CountdownTimer() {
+    const { inventory } = useContext(InventoryContext);
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
     const [winnerSelected, setWinnerSelected] = useState(null);
-
-
-    const calculateTimeLeft = () => {
-        const currentDate = new Date();
-        let targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 15);
-
-        if (targetDate < currentDate) {
-            targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 15);
-        }
-
-        const difference = targetDate - currentDate;
-        let timeLeft = {};
-
-        if (difference > 0) {
-            timeLeft = {
-                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-                minutes: Math.floor((difference / 1000 / 60) % 60),
-                seconds: Math.floor((difference / 1000) % 60)
-            };
-        }
-
-        return timeLeft;
-    };
-
-    const formatTime = (time) => {
-        return time < 10 ? `0${time}` : time;
-    };
-
 
     useEffect(() => {
         const currentDate = new Date();
@@ -47,15 +20,11 @@ function CountdownTimer() {
             const difference = targetDate - now;
 
             if (difference <= 0 && !winnerSelected) {
+                // Trigger winner selection process here
                 selectWinner();
             }
 
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((difference / 1000 / 60) % 60);
-            const seconds = Math.floor((difference / 1000) % 60);
-
-            setTimeLeft({ days, hours, minutes, seconds });
+            setTimeLeft(calculateTimeLeft());
         }, 1000);
 
         return () => clearInterval(timer);
@@ -64,8 +33,7 @@ function CountdownTimer() {
     const selectWinner = async () => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_PORT}/api/clients/pick-winner`, {
-                inventoryId: inventoryId,
-                raffleDate: new Date().toISOString()
+                inventoryId: inventory.id // Send inventoryId in the request
             });
             if (response.status === 200) {
                 setWinnerSelected(new Date());
@@ -99,5 +67,32 @@ function CountdownTimer() {
         </div>
     );
 }
+
+const calculateTimeLeft = () => {
+    const currentDate = new Date();
+    let targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 15);
+
+    if (targetDate < currentDate) {
+        targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 15);
+    }
+
+    const difference = targetDate - currentDate;
+    let timeLeft = {};
+
+    if (difference > 0) {
+        timeLeft = {
+            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((difference / 1000 / 60) % 60),
+            seconds: Math.floor((difference / 1000) % 60)
+        };
+    }
+
+    return timeLeft;
+};
+
+const formatTime = (time) => {
+    return time < 10 ? `0${time}` : time;
+};
 
 export default CountdownTimer;

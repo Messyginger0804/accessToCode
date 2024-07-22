@@ -1,4 +1,3 @@
-import React from 'react';
 import SignupForm from './components/SignupForm';
 import CountdownTimer from './components/CountdownTimer';
 import ProductCard from './components/ProductCard';

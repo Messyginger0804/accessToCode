@@ -1,20 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import axios from 'axios';
+import { InventoryContext } from '../InventoryContext'; // Import your context
 
 function ProductCard() {
-    const [inventory, setInventory] = useState({
-        productName: '',
-        image_url: '',
-        make: '',
-        model: '',
-        specs: {
-            RAM: '',
-            display: '',
-            processor: '',
-            storage: ''
-        },
-        inventoryId: ''  // Add inventoryId to state
-    });
+    const { inventory, setInventory } = useContext(InventoryContext);
 
     useEffect(() => {
         const fetchInventory = async () => {
@@ -34,7 +23,7 @@ function ProductCard() {
                             processor: '',
                             storage: ''
                         },
-                        inventoryId: firstItem.inventoryId || ''
+                        id: firstItem.id || null // Set inventory id
                     });
                 }
             } catch (error) {
@@ -43,9 +32,7 @@ function ProductCard() {
         };
 
         fetchInventory();
-    }, []);
-
-    console.log(inventory);
+    }, [setInventory]);
 
     return (
         <div className="max-w-md w-full bg-gray-900 rounded-lg shadow-lg p-8">
