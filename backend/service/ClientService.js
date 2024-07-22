@@ -88,6 +88,7 @@ export const deleteUser = async (id) => {
 };
 
 // Pick a random winner (assuming we're still using the same logic)
+// Pick a random winner
 export const pickRandomWinner = async () => {
     try {
         // Select users who have not won yet (has_won = false)
@@ -110,7 +111,7 @@ export const pickRandomWinner = async () => {
         const { rows } = await pool.query(queryUpdateWinner, valuesUpdateWinner);
         const updatedUser = rows[0]; // Assuming only one row is updated
 
-        console.log('Random winner:', randomWinner);
+        console.log('Random winner:', updatedUser);
         return updatedUser;
     } catch (error) {
         console.error('Error picking random winner:', error);
