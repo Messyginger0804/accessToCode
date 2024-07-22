@@ -1,16 +1,14 @@
-// services.js
-
 import pool from '../config/dbConfig.js';
 
 // Create a user
 export const createUser = async (userData) => {
-    const { username, email, password, linkedin } = userData;
+    const { username, email, linkedin } = userData;
     const query = `
     INSERT INTO users 
-    (username, email, password, created_at, linkedin) 
-    VALUES ($1, $2, $3, NOW(), $4) 
+    (username, email, created_at, linkedin) 
+    VALUES ($1, $2, NOW(), $3) 
     RETURNING *`;
-    const values = [username, email, password, linkedin];
+    const values = [username, email, linkedin];
 
     try {
         const result = await pool.query(query, values);
@@ -57,12 +55,13 @@ export const getUser = async (id) => {
 
 // Update a user
 export const updateUser = async (id, userData) => {
-    const { username, email, password, linkedin } = userData;
+    const { username, email, linkedin } = userData;
     const query = `
     UPDATE users 
-    SET username = $1, email = $2, password = $3, linkedin = $4, updated_at = NOW() WHERE user_id = $5 
+    SET username = $1, email = $2, linkedin = $3, updated_at = NOW() 
+    WHERE user_id = $4 
     RETURNING *`;
-    const values = [username, email, password, linkedin, id];
+    const values = [username, email, linkedin, id];
 
     try {
         const result = await pool.query(query, values);
@@ -88,7 +87,6 @@ export const deleteUser = async (id) => {
 };
 
 // Pick a random winner (assuming we're still using the same logic)
-// Pick a random winner
 export const pickRandomWinner = async () => {
     try {
         // Select users who have not won yet (has_won = false)

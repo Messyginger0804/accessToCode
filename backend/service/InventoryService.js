@@ -1,4 +1,4 @@
-import pool from '../config/dbConfig.js'; // Adjust the import based on your database configuration
+import pool from '../config/dbConfig.js';
 
 // Function to create a new inventory item
 export async function createInventoryItem(itemData) {
@@ -21,8 +21,8 @@ export async function getAllInventoryItems() {
 
     try {
         const { rows } = await pool.query(query);
-        console.log('Fetched inventory items:', rows); // Log fetched rows
-        return rows; // Return all inventory items
+        console.log('Fetched inventory items:', rows);
+        return rows;
     } catch (error) {
         console.error('Error fetching inventory items from database:', error);
         throw error;
@@ -32,9 +32,8 @@ export async function getAllInventoryItems() {
 export async function addToGivenAwayItems(inventoryId, winnerId, raffleDate) {
     const client = await pool.connect();
     try {
-        await client.query('BEGIN'); // Start transaction
+        await client.query('BEGIN');
 
-        // Insert into given_away_items
         const insertQuery = `
             INSERT INTO given_away_items (inventory_id, make, model, image_url, specs, raffle_date, winner_id)
             SELECT id, make, model, image_url, specs, $1, $2
@@ -58,7 +57,7 @@ export async function addToGivenAwayItems(inventoryId, winnerId, raffleDate) {
             throw new Error(`Failed to update inventory item with id ${inventoryId}`);
         }
 
-        await client.query('COMMIT'); // Commit transaction
+        await client.query('COMMIT');
 
         console.log('Inventory item transferred and updated:', givenAwayRows[0]);
         return {
@@ -66,10 +65,10 @@ export async function addToGivenAwayItems(inventoryId, winnerId, raffleDate) {
             updatedItem: updatedRows[0]
         };
     } catch (error) {
-        await client.query('ROLLBACK'); // Rollback transaction in case of error
+        await client.query('ROLLBACK');
         console.error('Error processing given away items:', error);
         throw error;
     } finally {
-        client.release(); // Release the client back to the pool
+        client.release();
     }
 }
