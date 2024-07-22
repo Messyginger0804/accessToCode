@@ -17,7 +17,7 @@ export async function createInventoryItem(itemData) {
 
 // Function to retrieve all inventory items
 export async function getAllInventoryItems() {
-    const query = 'SELECT * FROM inventory';
+    const query = 'SELECT * FROM inventory WHERE is_given_away = false';
 
     try {
         const { rows } = await pool.query(query);
