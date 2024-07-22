@@ -3,21 +3,29 @@ import pool from '../config/dbConfig.js';
 // Create a user
 export const createUser = async (userData) => {
     const { username, email, linkedin } = userData;
-    const query = `
-    INSERT INTO users 
-    (username, email, created_at, linkedin) 
-    VALUES ($1, $2, NOW(), $3) 
-    RETURNING *`;
-    const values = [username, email, linkedin];
+    const queryCheckExisting = 'SELECT * FROM users WHERE email = $1 OR linkedin = $2';
+    const valuesCheckExisting = [email, linkedin];
 
     try {
+        const checkResult = await pool.query(queryCheckExisting, valuesCheckExisting);
+        if (checkResult.rows.length > 0) {
+            // User already exists
+            return { success: false, message: 'User already exists' };
+        }
+
+        const query = `
+            INSERT INTO users (username, email, linkedin, created_at) 
+            VALUES ($1, $2, $3, NOW()) 
+            RETURNING *`;
+        const values = [username, email, linkedin];
+
         const result = await pool.query(query, values);
         const savedUser = result.rows[0];
         console.log('User created:', savedUser);
-        return savedUser;
+        return { success: true, user: savedUser };
     } catch (error) {
         console.error('Error creating user:', error);
-        return null;
+        return { success: false, message: 'Error creating user' };
     }
 };
 

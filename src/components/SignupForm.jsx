@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { AiOutlineLoading } from 'react-icons/ai'; // Assuming 'react-icons' package is used
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 function SignupForm() {
     const initialValues = {
@@ -11,7 +11,6 @@ function SignupForm() {
         linkedin: ''
     };
 
-    const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = async (values, { setSubmitting }) => {
@@ -19,28 +18,32 @@ function SignupForm() {
         try {
             const response = await axios.post(`${import.meta.env.VITE_PORT}/api/clients/create`, values);
 
-            if (response.status === 201) {
-                console.log('User created:', response.data);
+            if (response.data.success) {
                 Swal.fire({
-                    title: "Success!",
-                    text: `You're signed up!`,
+                    title: 'Success!',
+                    text: 'You are signed up for the next giveaway!',
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });
             } else {
-                throw new Error('Failed to create user');
+                Swal.fire({
+                    title: 'Already Registered!',
+                    text: 'Hey, we already have you in the database! You are signed up for the next giveaway already.',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
             }
         } catch (error) {
             console.error('Error creating user:', error);
             Swal.fire({
-                title: "Error!",
+                title: 'Error!',
                 text: 'Failed to create user. Please try again.',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
         } finally {
-            setIsLoading(false);
-            setSubmitting(false);
+            setIsLoading(false); // Reset loading state regardless of success or failure
+            setSubmitting(false); // Reset Formik's submitting state
         }
     };
 
@@ -84,7 +87,7 @@ function SignupForm() {
             </div>
             <h1 className="text-3xl font-bold mb-4 text-center">accessToCode</h1>
             <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validate}>
-                {({ isSubmitting }) => (
+                {({ isSubmitting, values }) => (
                     <Form>
                         <div className="mb-4">
                             <Field
@@ -128,7 +131,6 @@ function SignupForm() {
                                 'Sign Up'
                             )}
                         </button>
-                        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                     </Form>
                 )}
             </Formik>
