@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import axios from 'axios';
-import { InventoryContext } from '../InventoryContext'; // Import your context
+import { InventoryContext } from '../InventoryContext';
 
 function ProductCard() {
     const { inventory, setInventory } = useContext(InventoryContext);
@@ -11,7 +11,8 @@ function ProductCard() {
                 const response = await axios.get(`${import.meta.env.VITE_PORT}/api/inventory/items`);
                 console.log(response.data);
                 if (response.data.length > 0) {
-                    const firstItem = response.data[0];
+                    const sortedItems = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    const firstItem = sortedItems[0];
                     setInventory({
                         productName: firstItem.make + ' ' + firstItem.model || '',
                         image_url: firstItem.image_url || '',
@@ -23,7 +24,7 @@ function ProductCard() {
                             processor: '',
                             storage: ''
                         },
-                        id: firstItem.id || null // Set inventory id
+                        id: firstItem.id || null
                     });
                 }
             } catch (error) {

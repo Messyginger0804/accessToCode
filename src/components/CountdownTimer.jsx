@@ -5,7 +5,7 @@ import { InventoryContext } from '../InventoryContext'; // Import your context
 function CountdownTimer() {
     const { inventory } = useContext(InventoryContext);
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-    const [winnerSelected, setWinnerSelected] = useState(null);
+    const [winnerSelected, setWinnerSelected] = useState(false); // Change to boolean for simplicity
 
     useEffect(() => {
         const currentDate = new Date();
@@ -36,8 +36,7 @@ function CountdownTimer() {
                 inventoryId: inventory.id // Send inventoryId in the request
             });
             if (response.status === 200) {
-                setWinnerSelected(new Date());
-                console.log('Winner selected:', response.data);
+                setWinnerSelected(true); // Update state to show winner message
             } else {
                 console.error('Failed to select winner:', response.statusText);
             }
@@ -47,23 +46,31 @@ function CountdownTimer() {
     };
 
     return (
-        <div className="text-white text-center font-mono text-9xl rounded-lg bg-gray-800 shadow-lg p-4 flex justify-center gap-6 px-12">
-            {timeLeft.days > 0 && (
-                <div className="mb-2">
-                    <span className="font-bold">{formatTime(timeLeft.days)}</span> days{' '}
+        <div className="text-center font-mono text-6xl rounded-lg bg-gray-800 shadow-lg p-4 flex flex-col items-center">
+            {winnerSelected ? (
+                <div className="text-4xl font-bold text-yellow-300">
+                    We have a winner!!!
                 </div>
+            ) : (
+                <>
+                    <div className="text-white text-9xl flex gap-6">
+                        {/* Render countdown timer */}
+                        {timeLeft.days > 0 && (
+                            <div className="mb-2">
+                                <span className="font-bold">{formatTime(timeLeft.days)}</span> days{' '}
+                            </div>
+                        )}
+                        <div>
+                            <span className="font-bold">{formatTime(timeLeft.hours)}</span>:
+                            <span className="font-bold">{formatTime(timeLeft.minutes)}</span>:
+                            <span className="font-bold">{formatTime(timeLeft.seconds)}</span>
+                        </div>
+                    </div>
+                    <button onClick={() => selectWinner()} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Select Winner
+                    </button>
+                </>
             )}
-            <div>
-                <span className="font-bold">{formatTime(timeLeft.hours)}</span>:
-                <span className="font-bold">{formatTime(timeLeft.minutes)}</span>:
-                <span className="font-bold">{formatTime(timeLeft.seconds)}</span>
-            </div>
-            {winnerSelected && (
-                <div className="text-lg text-yellow-300 mt-4">
-                    Winner selected on {winnerSelected.toLocaleString()}
-                </div>
-            )}
-            <button onClick={() => selectWinner()}>click</button>
         </div>
     );
 }
