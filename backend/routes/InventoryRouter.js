@@ -1,5 +1,9 @@
 import express from 'express';
-import { createInventoryItem, getAllInventoryItems } from '../service/InventoryService.js';
+import {
+    createInventoryItem,
+    getAllInventoryItems,
+    deleteInventoryItem
+} from '../service/InventoryService.js';
 
 const router = express.Router();
 
@@ -27,6 +31,22 @@ router.get('/items', async (req, res) => {
         res.json(allInventoryItems);
     } catch (error) {
         console.error('Error fetching inventory items:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// Delete an inventory item by ID
+router.delete('/items/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedItem = await deleteInventoryItem(id);
+        if (deletedItem) {
+            res.status(200).json(deletedItem);
+        } else {
+            res.status(404).json({ message: `No inventory item found with id ${id}` });
+        }
+    } catch (error) {
+        console.error('Error deleting inventory item:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });

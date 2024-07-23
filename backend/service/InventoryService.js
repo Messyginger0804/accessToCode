@@ -17,7 +17,7 @@ export async function createInventoryItem(itemData) {
 
 // Function to retrieve all inventory items
 export async function getAllInventoryItems() {
-    const query = 'SELECT * FROM inventory WHERE is_given_away = false';
+    const query = 'SELECT * FROM inventory WHERE is_given_away = false ORDER BY created_at ASC'; // Order by created_at
 
     try {
         const { rows } = await pool.query(query);
@@ -29,6 +29,7 @@ export async function getAllInventoryItems() {
     }
 }
 
+// Function to add an item to given away items
 export async function addToGivenAwayItems(inventoryId, winnerId, raffleDate) {
     const client = await pool.connect();
     try {
@@ -70,5 +71,25 @@ export async function addToGivenAwayItems(inventoryId, winnerId, raffleDate) {
         throw error;
     } finally {
         client.release();
+    }
+}
+
+// Function to delete an inventory item by ID
+export async function deleteInventoryItem(itemId) {
+    const query = 'DELETE FROM inventory WHERE id = $1 RETURNING *';
+    const values = [itemId];
+
+    try {
+        const { rows } = await pool.query(query, values);
+
+        if (rows.length === 0) {
+            throw new Error(`No inventory item found with id ${itemId}`);
+        }
+
+        console.log('Deleted inventory item:', rows[0]);
+        return rows[0]; // Return the deleted inventory item
+    } catch (error) {
+        console.error('Error deleting inventory item from database:', error);
+        throw error;
     }
 }
