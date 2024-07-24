@@ -1,17 +1,19 @@
-// App.jsx
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import SignupForm from './components/SignupForm';
-import CountdownTimer from './components/CountdownTimer';
-import ProductCard from './components/ProductCard';
-import Description from './components/Description';
 import Admin from './components/Admin';
-import Inventory from './components/Inventory';
+import CountdownTimer from './components/CountdownTimer';
+import Description from './components/Description';
+import ProductCard from './components/ProductCard';
 
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [showInventory, setShowInventory] = useState(false);
-  const [inventory, setInventory] = useState(null); // New state for inventory data
+  const [inventory, setInventory] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const toggleForm = () => {
+    setIsAdmin(prevState => !prevState);
+  };
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -22,67 +24,53 @@ function App() {
         }
       } catch (error) {
         console.error('Error fetching inventory:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchInventory();
   }, []);
 
-  const toggleForm = () => {
-    setIsAdmin(prevState => !prevState);
-  };
-
-  const toggleInventory = () => {
-    setShowInventory(prevState => !prevState);
-  };
-
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
-      <div className="w-full">
+      <div className="w-full flex flex-col items-center">
+        {/* Countdown Timer Component */}
         <CountdownTimer />
-      </div>
-      <div className="w-full flex justify-center m-4">
+
+        {/* Toggle Button */}
         <button
           onClick={toggleForm}
-          className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700"
+          className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 mt-4"
         >
           {isAdmin ? 'Switch to Signup Form' : 'Switch to Admin Form'}
         </button>
-        <button
-          onClick={toggleInventory}
-          className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 ml-4"
-        >
-          {showInventory ? 'Back to Main View' : 'Show Inventory'}
-        </button>
       </div>
 
-      {showInventory ? (
-        <div className="w-full">
-          <Inventory inventory={inventory} />
-        </div>
-      ) : (
-        <div className='flex flex-col lg:flex-row'>
-          <div className="w-full lg:w-1/2 flex justify-center my-12">
-            {inventory ? (
+      {/* Display ProductCard and SignupForm side by side */}
+      <div className='w-full lg:flex lg:justify-center mt-12'>
+        {!isAdmin && (
+          <div className="flex-1 lg:max-w-md p-4">
+            {loading ? (
+              <p className="text-gray-300">Loading product...</p>
+            ) : inventory ? (
               <ProductCard item={inventory} />
             ) : (
-              <p className="text-gray-300">Loading product...</p>
+              <p className="text-gray-300">No product available.</p>
             )}
           </div>
+        )}
 
-          <div className="w-full lg:w-1/2 flex justify-center my-12">
-            {isAdmin ? <Admin /> : <SignupForm />}
-          </div>
+        <div className="flex-1 lg:max-w-md p-4">
+          {isAdmin ? <Admin /> : <SignupForm />}
         </div>
-      )}
+      </div>
 
-      {!showInventory && (
-        <div className="w-full flex justify-center m-12">
-          <div className="max-w-full">
-            <Description />
-          </div>
+      <div className="w-full flex justify-center m-12">
+        <div className="max-w-full">
+          <Description />
         </div>
-      )}
+      </div>
     </div>
   );
 }

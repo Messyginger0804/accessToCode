@@ -32,7 +32,7 @@ function Inventory() {
     };
 
     return (
-        <div className="flex flex-wrap justify-center gap-6 p-6">
+        <div className="flex flex-wrap justify-center gap-4 p-2">
             {loading ? (
                 <p className="text-gray-300">Loading inventory...</p>
             ) : items.length === 0 ? (

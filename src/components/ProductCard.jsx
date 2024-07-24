@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 
 function ProductCard({ item }) {
     const { image_url, make, model, specs } = item || {};
@@ -17,5 +18,20 @@ function ProductCard({ item }) {
         </div>
     );
 }
+
+// Define PropTypes for the component
+ProductCard.propTypes = {
+    item: PropTypes.shape({
+        image_url: PropTypes.string.isRequired,
+        make: PropTypes.string.isRequired,
+        model: PropTypes.string.isRequired,
+        specs: PropTypes.shape({
+            RAM: PropTypes.string,
+            display: PropTypes.string,
+            processor: PropTypes.string,
+            storage: PropTypes.string
+        })
+    }).isRequired
+};
 
 export default ProductCard;
