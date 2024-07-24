@@ -66,11 +66,14 @@ function App() {
         </div>
       </div>
 
-      <div className="w-full flex justify-center m-12">
-        <div className="max-w-full">
-          <Description />
+      {/* Only display Description when SignupForm is visible */}
+      {!isAdmin && (
+        <div className="w-full flex justify-center m-12">
+          <div className="max-w-full">
+            <Description />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
