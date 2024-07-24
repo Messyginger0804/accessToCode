@@ -115,7 +115,7 @@ export const pickRandomWinner = async () => {
         const queryUpdateWinner = 'UPDATE users SET has_won = true WHERE user_id = $1 RETURNING *';
         const valuesUpdateWinner = [randomWinner.user_id];
         const { rows } = await pool.query(queryUpdateWinner, valuesUpdateWinner);
-        const updatedUser = rows[0]; // Assuming only one row is updated
+        const updatedUser = rows[0];
 
         console.log('Random winner:', updatedUser);
         return updatedUser;

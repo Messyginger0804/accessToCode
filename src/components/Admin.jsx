@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import AddProduct from './AddProduct'; // Import the AddProduct component
-import Inventory from './Inventory'; // Import the Inventory component
+import AddProduct from './AddProduct';
+import Inventory from './Inventory';
 
 const Admin = () => {
     const [inventory, setInventory] = useState([]);
@@ -20,16 +20,16 @@ const Admin = () => {
     }, []);
 
     const refreshInventory = async () => {
-        await fetchInventory(); // Refresh the inventory list
+        await fetchInventory();
     };
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-900 text-white">
             <div className="flex-grow p-8">
-                <AddProduct refreshInventory={refreshInventory} /> {/* Pass refreshInventory to AddProduct */}
+                <AddProduct refreshInventory={refreshInventory} />
             </div>
             <div className="bg-gray-800 p-8">
-                <Inventory items={inventory} /> {/* Pass inventory items to Inventory */}
+                <Inventory items={inventory} />
             </div>
         </div>
     );

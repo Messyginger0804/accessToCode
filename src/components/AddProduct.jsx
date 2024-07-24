@@ -2,6 +2,8 @@ import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
+import PropTypes from 'prop-types'; // Import PropTypes
+
 
 const validationSchema = Yup.object({
     make: Yup.string().required('Required'),
@@ -147,6 +149,10 @@ const AddProduct = ({ refreshInventory }) => {
             </Formik>
         </div>
     );
+};
+
+AddProduct.propTypes = {
+    refreshInventory: PropTypes.func.isRequired, // Ensure 'refreshInventory' is a required function
 };
 
 export default AddProduct;

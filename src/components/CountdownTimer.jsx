@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { InventoryContext } from '../InventoryContext'; // Import your context
+import { InventoryContext } from '../InventoryContext';
 
 function CountdownTimer() {
     const { inventory } = useContext(InventoryContext);
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-    const [winnerSelected, setWinnerSelected] = useState(false); // Change to boolean for simplicity
+    const [winnerSelected, setWinnerSelected] = useState(false);
 
     useEffect(() => {
         const currentDate = new Date();
@@ -20,7 +20,6 @@ function CountdownTimer() {
             const difference = targetDate - now;
 
             if (difference <= 0 && !winnerSelected) {
-                // Trigger winner selection process here
                 selectWinner();
             }
 
@@ -32,11 +31,12 @@ function CountdownTimer() {
 
     const selectWinner = async () => {
         try {
+            console.log(inventory);
             const response = await axios.post(`${import.meta.env.VITE_PORT}/api/clients/pick-winner`, {
-                inventoryId: inventory.id // Send inventoryId in the request
+                inventoryId: inventory.id
             });
             if (response.status === 200) {
-                setWinnerSelected(true); // Update state to show winner message
+                setWinnerSelected(true);
             } else {
                 console.error('Failed to select winner:', response.statusText);
             }
@@ -54,7 +54,6 @@ function CountdownTimer() {
             ) : (
                 <>
                     <div className="text-white text-9xl flex gap-6">
-                        {/* Render countdown timer */}
                         {timeLeft.days > 0 && (
                             <div className="mb-2">
                                 <span className="font-bold">{formatTime(timeLeft.days)}</span> days{' '}

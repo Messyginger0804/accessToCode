@@ -13,6 +13,7 @@ function App() {
 
   const toggleForm = () => {
     setIsAdmin(prevState => !prevState);
+    console.log(inventory.id)
   };
 
   useEffect(() => {
